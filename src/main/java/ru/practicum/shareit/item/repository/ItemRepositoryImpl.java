@@ -80,8 +80,10 @@ public class ItemRepositoryImpl implements ItemRepository {
 
     private boolean isContainsText(String text, ItemDto item) {
         String lowerCase = text.toLowerCase();
-        return item.getName().toLowerCase().contains(lowerCase)
-                || item.getDescription().toLowerCase().contains(lowerCase);
+        boolean isNameContains = item.getName() != null && item.getName().toLowerCase().contains(lowerCase);
+        boolean isDescriptionContains = item.getDescription() != null &&
+                item.getDescription().toLowerCase().contains(lowerCase);
+        return isNameContains || isDescriptionContains;
     }
 
     private Long increment() {

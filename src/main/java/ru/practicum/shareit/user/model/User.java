@@ -1,6 +1,7 @@
 package ru.practicum.shareit.user.model;
 
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,6 +17,7 @@ public class User {
     @PositiveOrZero
     private Long id;
     private String name;
+    @NotBlank
     @Email(message = "Невалидный почтовый ящик")
     private String email;
 

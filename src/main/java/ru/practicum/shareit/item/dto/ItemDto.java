@@ -26,10 +26,4 @@ public class ItemDto {
     private Boolean available;
     private Long userId;
     private Boolean isRequested;
-
-    public ItemDto(String name, String description, Boolean available) {
-        this.name = name;
-        this.description = description;
-        this.available = available;
-    }
 }
