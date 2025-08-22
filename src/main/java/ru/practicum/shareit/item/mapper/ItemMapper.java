@@ -13,7 +13,7 @@ public class ItemMapper {
      * @param item - вещь, приводимая к объекту класса ItemDto
      * @return возвращает объект класса ItemDto
      */
-    public ItemDto toItemDto(Item item) {
+    public static ItemDto toItemDto(Item item) {
         return new ItemDto(item.getId(), item.getName(), item.getDescription(), item.getAvailable(),
                 item.getUserId(), item.getIsRequested());
     }
@@ -23,7 +23,7 @@ public class ItemMapper {
      * @param item - вещь, приводимая к объекту класса Item
      * @return возвращает объект класса Item
      */
-    public Item toItem(ItemDto item) {
+    public static Item toItem(ItemDto item) {
         return new Item(item.getId(), item.getName(), item.getDescription(), item.getAvailable(),
                 item.getUserId(), item.getIsRequested());
     }

@@ -13,7 +13,7 @@ public class UserMapper {
      * @param user - пользователь, приводимый к объекту класса UserDto
      * @return возвращает объект класса UserDto
      */
-    public UserDto toUserDto(User user) {
+    public static UserDto toUserDto(User user) {
         return new UserDto(user.getId(), user.getName(), user.getEmail());
     }
 
@@ -22,7 +22,7 @@ public class UserMapper {
      * @param user - пользователь, приводимый к объекту класса User
      * @return возвращает объект класса User
      */
-    public User toUser(UserDto user) {
+    public static User toUser(UserDto user) {
         return new User(user.getId(), user.getName(), user.getEmail());
     }
 }

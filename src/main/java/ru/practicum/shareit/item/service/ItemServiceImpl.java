@@ -4,10 +4,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.ObjectNotFoundException;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.mapper.ItemMapper;
+import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.user.repository.UserRepository;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import static java.lang.String.format;
 
 @Service
 @RequiredArgsConstructor
@@ -16,29 +21,51 @@ public class ItemServiceImpl implements ItemService {
     private final UserRepository userRepository;
 
     @Override
-    public ItemDto createItem(Long userId, ItemDto item) {
+    public ItemDto createItem(Long userId, ItemDto itemDto) {
         if (userRepository.getById(userId) == null) {
             throw new ObjectNotFoundException("Пользователь не найден");
         }
-        return itemRepository.createItem(userId, item);
+        Item item = ItemMapper.toItem(itemDto);
+        Item itemCreated = itemRepository.createItem(userId, item);
+        return ItemMapper.toItemDto(itemCreated);
     }
 
     @Override
-    public ItemDto updateItem(Long userId, Long itemId, ItemDto item) {
-        ItemDto thisItem = new ItemDto();
-        if (userRepository.getById(userId) != null && itemRepository.getItemById(itemId) != null) {
-            if (itemRepository.isUsersItem(userId, itemId)) {
-                thisItem = itemRepository.updateItem(itemId, item);
-            } else {
-                throw new ObjectNotFoundException("Пользователь не является владельцем товара");
-            }
+    public ItemDto updateItem(Long userId, Long itemId, ItemDto itemDto) {
+        if (userRepository.getById(userId) == null) {
+            throw new ObjectNotFoundException("Пользователь не найден");
         }
-        return thisItem;
+        if (itemRepository.getItemById(itemId) == null) {
+            throw new ObjectNotFoundException("Вещь не найдена");
+        }
+        if (!itemRepository.isUsersItem(userId, itemId)) {
+            throw new ObjectNotFoundException("Пользователь не является владельцем товара");
+        }
+        Item item = ItemMapper.toItem(itemDto);
+        Item updateItem = itemRepository.getItemById(itemId);
+        if (item.getName() != null) {
+            updateItem.setName(item.getName());
+        }
+        if (item.getDescription() != null) {
+            updateItem.setDescription(item.getDescription());
+        }
+        if (item.getAvailable() != null) {
+            updateItem.setAvailable(item.getAvailable());
+        }
+        Item itemUpdated = itemRepository.updateItem(itemId, updateItem);
+        return ItemMapper.toItemDto(itemUpdated);
     }
 
     @Override
     public ItemDto getItemById(Long userId, Long id) {
-        return itemRepository.getItemById(id);
+        if (userRepository.getById(userId) == null) {
+            throw new ObjectNotFoundException("Пользователь не найден");
+        }
+        if (!itemRepository.existById(id)) {
+            throw new ObjectNotFoundException(format("Вещь с идентификатором %d не найдена", id));
+        }
+        Item itemGet = itemRepository.getItemById(id);
+        return ItemMapper.toItemDto(itemGet);
     }
 
     @Override
@@ -48,11 +75,21 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemDto> getItemsByUserId(Long id) {
-        return itemRepository.getItemsByUserId(id);
+        List<Item> itemsByUserId = itemRepository.getItemsByUserId(id);
+        return itemsByUserId.stream()
+                .map(ItemMapper::toItemDto)
+                .toList();
     }
 
     @Override
     public List<ItemDto> search(String text) {
-        return itemRepository.search(text);
+        if (text.isBlank()) {
+            return new ArrayList<>();
+        } else {
+            List<Item> itemsSearched = itemRepository.search(text);
+            return itemsSearched.stream()
+                    .map(ItemMapper::toItemDto)
+                    .toList();
+        }
     }
 }

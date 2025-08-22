@@ -1,6 +1,6 @@
 package ru.practicum.shareit.item.repository;
 
-import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.model.Item;
 
 import java.util.List;
 
@@ -14,7 +14,7 @@ public interface ItemRepository {
      * @param userId - идентификатор пользователя
      * @return возвращает сохранённую вещь
      */
-    ItemDto createItem(Long userId, ItemDto item);
+    Item createItem(Long userId, Item item);
 
     /**
      * Метод проверяет, принадлежит ли вещь пользователю
@@ -29,14 +29,14 @@ public interface ItemRepository {
      * @param item - обновляемая вещь
      * @return возвращает обновлённую вещь
      */
-    ItemDto updateItem(Long itemId, ItemDto item);
+    Item updateItem(Long itemId, Item item);
 
     /**
      * Метод возвращает вещь по её идентификатору
      * @param id - идентификатор вещи
      * @return возвращает найденную вещь из хранилища
      */
-    ItemDto getItemById(Long id);
+    Item getItemById(Long id);
 
     /**
      * Метод удаляет вещь из хранилища по её идентификатору
@@ -49,12 +49,19 @@ public interface ItemRepository {
      * @param id - идентификатор пользователя
      * @return возвращает список с вещами
      */
-    List<ItemDto> getItemsByUserId(Long id);
+    List<Item> getItemsByUserId(Long id);
 
     /**
      * Метод поиска вещи в хранилище по ключевым словам
      * @param text - ключевые слова, по которым идёт поиск
      * @return возвращает список вещей, в которых найдены ключевые слова
      */
-    List<ItemDto> search(String text);
+    List<Item> search(String text);
+
+    /**
+     * Метод проверки существования вещи в репозитории
+     * @param id - идентификатор вещи
+     * @return возвращает наличие/отсутствие вещи в репозитории
+     */
+    Boolean existById(Long id);
 }
