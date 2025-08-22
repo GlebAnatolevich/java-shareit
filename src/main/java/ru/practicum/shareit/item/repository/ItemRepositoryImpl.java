@@ -4,17 +4,14 @@ import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.exception.ObjectNotFoundException;
 import ru.practicum.shareit.item.dto.ItemDto;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static java.lang.String.format;
 
 @Repository
 public class ItemRepositoryImpl implements ItemRepository {
     private final Map<Long, ItemDto> items = new HashMap<>();
-    private final Map<Long, Long> usersItems = new HashMap<>();
+    private final Map<Long, Set<Long>> usersItems = new HashMap<>();
     private Long id = 0L;
 
     @Override
@@ -27,19 +24,12 @@ public class ItemRepositoryImpl implements ItemRepository {
 
     @Override
     public void saveUsersItems(Long userId, Long itemId) {
-        usersItems.put(userId, itemId);
+        usersItems.get(userId).add(itemId);
     }
 
     @Override
     public boolean isUsersItem(Long userId, Long itemId) {
-        boolean isUsersItem = false;
-        for (Map.Entry<Long, Long> entry: usersItems.entrySet()) {
-            if (entry.getKey().equals(userId) && entry.getValue().equals(itemId)) {
-                isUsersItem = true;
-                break;
-            }
-        }
-        return isUsersItem;
+        return usersItems.get(userId).contains(itemId);
     }
 
     @Override
@@ -61,44 +51,27 @@ public class ItemRepositoryImpl implements ItemRepository {
 
     @Override
     public void deleteItemById(Long id) {
-        if (usersItems.containsValue(id)) {
-            for (Map.Entry<Long, Long> entry: usersItems.entrySet()) {
-                Long userId = entry.getKey();
-                Long itemId = entry.getValue();
-                usersItems.remove(userId, itemId);
-            }
-        }
         items.remove(id);
+        usersItems.keySet().forEach(key -> usersItems.get(key).remove(id));
     }
 
     @Override
     public List<ItemDto> getItemsByUserId(Long id) {
-        List<ItemDto> itemsList = new ArrayList<>();
-        for (Map.Entry<Long, Long> entry: usersItems.entrySet()) {
-            Long userId = entry.getKey();
-            Long itemId = entry.getValue();
-            if (id.equals(userId)) {
-                itemsList.add(getItemById(itemId));
-            }
-        }
-        return itemsList;
+        return usersItems.get(id).stream()
+                .map(items::get)
+                .toList();
     }
 
     @Override
     public List<ItemDto> search(String text) {
-        List<ItemDto> itemsList = new ArrayList<>();
-        if (!text.isBlank()) {
-            for (Map.Entry<Long, ItemDto> entry : items.entrySet()) {
-                ItemDto item = entry.getValue();
-                if (item.getName().toLowerCase().contains(text.toLowerCase())
-                        || item.getDescription().toLowerCase().contains(text.toLowerCase())) {
-                    if (item.getAvailable().equals(true)) {
-                        itemsList.add(item);
-                    }
-                }
-            }
-        }
-        return itemsList;
+        return items.values().stream()
+                .filter(item -> isContainsText(text, item))
+                .toList();
+    }
+
+    private boolean isContainsText(String text, ItemDto item) {
+        return item.getName().toLowerCase().contains(text)
+                || item.getDescription().toLowerCase().contains(text);
     }
 
     private Long increment() {

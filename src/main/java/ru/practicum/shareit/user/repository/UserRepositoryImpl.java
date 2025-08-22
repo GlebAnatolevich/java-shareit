@@ -32,16 +32,20 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public User update(Long id, User user) {
         User thisUser = users.get(id);
-        if (!user.getEmail().equals(thisUser.getEmail())) {
-            for (Map.Entry<Long, User> entry : users.entrySet()) {
-                User currentUser = entry.getValue();
-                if (user.getEmail().equals(currentUser.getEmail())) {
-                    throw new ObjectAlreadyExistsException("Почтовый ящик уже есть в системе");
+        if (user.getEmail() != null) {
+            if (!user.getEmail().equals(thisUser.getEmail())) {
+                for (Map.Entry<Long, User> entry : users.entrySet()) {
+                    User currentUser = entry.getValue();
+                    if (user.getEmail().equals(currentUser.getEmail())) {
+                        throw new ObjectAlreadyExistsException("Почтовый ящик уже есть в системе");
+                    }
                 }
+                thisUser.setEmail(user.getEmail());
             }
-            thisUser.setEmail(user.getEmail());
         }
+        if (user.getName() != null) {
             thisUser.setName(user.getName());
+        }
         users.put(id, thisUser);
         return users.get(id);
     }
