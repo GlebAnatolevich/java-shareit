@@ -3,7 +3,6 @@ package ru.practicum.shareit.item.repository;
 import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.exception.ObjectNotFoundException;
 import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.util.*;
 
@@ -26,7 +25,7 @@ public class ItemRepositoryImpl implements ItemRepository {
     }
 
     private void saveUsersItems(Long userId, Long id) {
-        if(!usersItems.containsKey(userId)) {
+        if (!usersItems.containsKey(userId)) {
             usersItems.put(userId, new TreeSet<>());
         }
         usersItems.get(userId).add(id);
