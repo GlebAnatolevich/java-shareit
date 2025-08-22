@@ -68,10 +68,14 @@ public class ItemRepositoryImpl implements ItemRepository {
 
     @Override
     public List<ItemDto> search(String text) {
-        return items.values().stream()
-                .filter(item -> isContainsText(text, item))
-                .filter(ItemDto::getAvailable)
-                .toList();
+        if (text.isBlank()) {
+            return new ArrayList<>();
+        } else {
+            return items.values().stream()
+                    .filter(item -> isContainsText(text, item))
+                    .filter(ItemDto::getAvailable)
+                    .toList();
+        }
     }
 
     private boolean isContainsText(String text, ItemDto item) {
