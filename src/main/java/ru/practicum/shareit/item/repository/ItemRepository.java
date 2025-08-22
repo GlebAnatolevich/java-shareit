@@ -11,16 +11,10 @@ public interface ItemRepository {
     /**
      * Метод создаёт новую вещь и сохраняет её в хранилище
      * @param item - сохраняемая вещь
+     * @param userId - идентификатор пользователя
      * @return возвращает сохранённую вещь
      */
-    ItemDto createItem(ItemDto item);
-
-    /**
-     * Метод сохраняет данные о вещах пользователя
-     * @param userId - идентификатор пользователя
-     * @param itemId - идентификатор вещи
-     */
-    void saveUsersItems(Long userId, Long itemId);
+    ItemDto createItem(Long userId, ItemDto item);
 
     /**
      * Метод проверяет, принадлежит ли вещь пользователю

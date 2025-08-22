@@ -17,12 +17,10 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public ItemDto createItem(Long userId, ItemDto item) {
-        ItemDto thisItem = new ItemDto();
-        if (userRepository.getById(userId) != null) {
-            thisItem = itemRepository.createItem(item);
-            itemRepository.saveUsersItems(userId, thisItem.getId());
+        if (userRepository.getById(userId) == null) {
+            throw new ObjectNotFoundException("Пользователь не найден");
         }
-        return thisItem;
+        return itemRepository.createItem(userId, item);
     }
 
     @Override

@@ -6,7 +6,6 @@ import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.practicum.shareit.user.model.User;
 
 /**
  * Класс-модель для создания сущности вещи.
@@ -23,6 +22,6 @@ public class Item {
     private String description;
     @NotNull(message = "Поле статуса доступности не может быть пустым")
     private Boolean available;
-    private User owner;
+    private Long userId;
     private Boolean isRequested;
 }

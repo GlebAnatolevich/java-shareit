@@ -6,7 +6,6 @@ import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.practicum.shareit.user.model.User;
 
 /**
  * Класс-маппер для создания объекта вещи.
@@ -25,7 +24,7 @@ public class ItemDto {
     private String description;
     @NotNull(message = "Поле статуса доступности не может быть пустым")
     private Boolean available;
-    private User owner;
+    private Long userId;
     private Boolean isRequested;
 
     public ItemDto(String name, String description, Boolean available) {
