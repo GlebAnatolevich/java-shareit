@@ -70,12 +70,14 @@ public class ItemRepositoryImpl implements ItemRepository {
     public List<ItemDto> search(String text) {
         return items.values().stream()
                 .filter(item -> isContainsText(text, item))
+                .filter(ItemDto::getAvailable)
                 .toList();
     }
 
     private boolean isContainsText(String text, ItemDto item) {
-        return item.getName().toLowerCase().contains(text)
-                || item.getDescription().toLowerCase().contains(text);
+        String lowerCase = text.toLowerCase();
+        return item.getName().toLowerCase().contains(lowerCase)
+                || item.getDescription().toLowerCase().contains(lowerCase);
     }
 
     private Long increment() {
