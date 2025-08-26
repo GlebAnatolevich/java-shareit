@@ -1,57 +1,7 @@
 package ru.practicum.shareit.user.repository;
 
+import org.springframework.data.jpa.repository.JpaRepository;
 import ru.practicum.shareit.user.model.User;
 
-import java.util.List;
-
-/**
- * Класс-хранилище данных о пользователях
- */
-public interface UserRepository {
-    /**
-     * Метод создаёт пользователя и добавляет его в хранилище
-     * @param user - данные пользователя
-     * @return возвращает созданного пользователя
-     */
-    User create(User user);
-
-    /**
-     * Метод обновляет данные пользователя в хранилище
-     * @param user - данные пользователя
-     * @return возвращает новые данные о пользователе
-     */
-    User update(Long id, User user);
-
-    /**
-     * Метод получения пользователя по идентификатору
-     * @param id - идентификатор пользователя
-     * @return возвращает полученного пользователя
-     */
-    User getById(Long id);
-
-    /**
-     * Метод удаления пользователя по идентификатору
-     * @param id - идентификатор пользователя
-     */
-    void deleteById(Long id);
-
-    /**
-     * Метод получения списка пользователей
-     * @return возвращает список пользователей из хранилища
-     */
-    List<User> getUsers();
-
-    /**
-     * Метод проверки существования пользователя в репозитории
-     * @param id - идентификатор пользователя
-     * @return возвращает наличие/отсутствие пользователя в репозитории
-     */
-    Boolean existById(Long id);
-
-    /**
-     * Метод проверки существования аналогичного email в репозитории пользователей
-     * @param email - email пользователя
-     * @return возвращает наличие/отсутствие пользователя с аналогичным указанному в запросе email
-     */
-    Boolean existByEmail(String email);
+public interface UserRepository extends JpaRepository<User, Long> {
 }
