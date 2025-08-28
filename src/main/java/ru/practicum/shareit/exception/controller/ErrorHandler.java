@@ -72,4 +72,16 @@ public class ErrorHandler {
     public ErrorResponse handleWrongAccessException(final WrongAccessException exception) {
         return new ErrorResponse(exception.getMessage());
     }
+
+    /**
+     * Метод для обработки исключения 403
+     *
+     * @param exception - возникающая ошибка
+     * @return возвращаемый ответ
+     */
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ErrorResponse handleForbiddenException(final ForbiddenException exception) {
+        return new ErrorResponse(exception.getMessage());
+    }
 }

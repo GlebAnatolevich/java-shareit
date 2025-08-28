@@ -12,6 +12,7 @@ import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.enums.State;
 import ru.practicum.shareit.enums.Status;
 import ru.practicum.shareit.exception.AccessException;
+import ru.practicum.shareit.exception.ForbiddenException;
 import ru.practicum.shareit.exception.ObjectNotFoundException;
 import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.model.Item;
@@ -37,13 +38,13 @@ public class BookingServiceImpl implements BookingService {
     public BookingDto create(Long userId, BookingShortDto booking) {
         Item item = itemRepository.findById(booking.getItemId()).orElseThrow(
                 () -> new ObjectNotFoundException("Товара не существует"));
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new ObjectNotFoundException("Пользователь не найден"));
         if (item.getAvailable().equals(false)) {
             throw new AccessException("Товар недоступен для бронирования");
         }
-        User user = userRepository.findById(userId).orElseThrow(
-                () -> new ObjectNotFoundException("Пользователь не найден"));
         if (item.getOwner().getId().equals(userId)) {
-            throw new ObjectNotFoundException("Не найдено");
+            throw new ForbiddenException("Не найдено");
         }
         if (booking.getStart().equals(booking.getEnd())) {
             throw new ValidationException("Время начала не может быть равно времени окончания заявки");
@@ -65,7 +66,7 @@ public class BookingServiceImpl implements BookingService {
         Booking thisBooking = bookingRepository.findById(bookingId).orElseThrow(
                 () -> new ObjectNotFoundException("Бронирование не найдено"));
         if (!userId.equals(thisBooking.getItem().getOwner().getId())) {
-            throw new ObjectNotFoundException("Не найдено");
+            throw new ForbiddenException("Не найдено");
         }
         if (!thisBooking.getStatus().equals(Status.WAITING)) {
             throw new AccessException("Нельзя изменить статус");
