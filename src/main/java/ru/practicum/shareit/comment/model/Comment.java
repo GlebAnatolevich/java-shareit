@@ -26,9 +26,7 @@ public class Comment {
     private User author;
     private LocalDateTime created;
 
-    public Comment(Long id, String text, LocalDateTime created) {
-        this.id = id;
+    public Comment(String text) {
         this.text = text;
-        this.created = created;
     }
 }

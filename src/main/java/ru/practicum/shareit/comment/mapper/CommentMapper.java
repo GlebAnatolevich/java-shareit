@@ -13,6 +13,6 @@ public class CommentMapper {
     }
 
     public Comment toComment(CommentShortDto comment) {
-        return new Comment(comment.getId(), comment.getText(), comment.getCreated());
+        return new Comment(comment.getText());
     }
 }
