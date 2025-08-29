@@ -2,22 +2,20 @@ package ru.practicum.shareit.user.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.practicum.shareit.util.Create;
+import ru.practicum.shareit.util.Update;
 
-/**
- * Класс-модель DTO для создания объекта пользователя
- */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserDto {
-    @PositiveOrZero
     private Long id;
-    @NotBlank(message = "Поле имени пользователя не должно быть пустым")
+    @NotBlank(message = "Поле имени не должно быть пустым", groups = {Create.class})
     private String name;
-    @Email(message = "Невалидный почтовый ящик")
+    @Email(message = "Невалидный почтовый ящик", groups = {Create.class, Update.class})
+    @NotBlank(message = "Поле почтового ящика не должно быть пустым", groups = {Create.class})
     private String email;
 }

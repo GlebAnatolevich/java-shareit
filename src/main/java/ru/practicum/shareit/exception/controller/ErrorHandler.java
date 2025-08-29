@@ -4,9 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import ru.practicum.shareit.exception.ObjectAlreadyExistsException;
-import ru.practicum.shareit.exception.ObjectNotFoundException;
-import ru.practicum.shareit.exception.ValidationException;
+import ru.practicum.shareit.exception.*;
 import ru.practicum.shareit.exception.model.ErrorResponse;
 
 /**
@@ -17,6 +15,7 @@ public class ErrorHandler {
 
     /**
      * Метод для обработки исключения 400
+     *
      * @param exception возникающая ошибка
      * @return возвращаемый ответ
      */
@@ -28,6 +27,7 @@ public class ErrorHandler {
 
     /**
      * Метод для обработки исключения 404
+     *
      * @param exception - возникающая ошибка
      * @return возвращаемый ответ
      */
@@ -38,13 +38,26 @@ public class ErrorHandler {
     }
 
     /**
-     * Метод для обработки исключения 500
+     * Метод для обработки исключения 400
+     *
      * @param exception - возникающая ошибка
      * @return возвращаемый ответ
      */
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponse handleObjectAlreadyExistsException(final ObjectAlreadyExistsException exception) {
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleAccessException(final AccessException exception) {
+        return new ErrorResponse(exception.getMessage());
+    }
+
+    /**
+     * Метод для обработки исключения 403
+     *
+     * @param exception - возникающая ошибка
+     * @return возвращаемый ответ
+     */
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ErrorResponse handleForbiddenException(final ForbiddenException exception) {
         return new ErrorResponse(exception.getMessage());
     }
 }
