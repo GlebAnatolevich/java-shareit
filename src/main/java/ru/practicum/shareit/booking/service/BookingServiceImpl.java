@@ -65,6 +65,8 @@ public class BookingServiceImpl implements BookingService {
     public BookingDto updateStatus(Long bookingId, Long userId, Boolean approved) {
         Booking thisBooking = bookingRepository.findById(bookingId).orElseThrow(
                 () -> new ObjectNotFoundException("Бронирование не найдено"));
+        userRepository.findById(userId).orElseThrow(
+                () -> new ForbiddenException("Не найдено"));
         if (!userId.equals(thisBooking.getItem().getOwner().getId())) {
             throw new ForbiddenException("Не найдено");
         }
@@ -97,7 +99,6 @@ public class BookingServiceImpl implements BookingService {
             case FUTURE -> bookingRepository.findAllByItemOwnerAndStartAfter(user, LocalDateTime.now(), sort);
             case WAITING -> bookingRepository.findAllByItemOwnerAndStatusEquals(user, Status.WAITING, sort);
             case REJECTED -> bookingRepository.findAllByItemOwnerAndStatusEquals(user, Status.REJECTED, sort);
-            default -> throw new AccessException("Unknown state: UNSUPPORTED_STATUS");
         };
         return bookingList.stream().map(mapper::toBookingDto).collect(Collectors.toList());
     }
@@ -115,7 +116,6 @@ public class BookingServiceImpl implements BookingService {
             case FUTURE -> bookingRepository.findAllByBookerAndStartAfter(user, LocalDateTime.now(), sort);
             case WAITING -> bookingRepository.findAllByBookerAndStatusEquals(user, Status.WAITING, sort);
             case REJECTED -> bookingRepository.findAllByBookerAndStatusEquals(user, Status.REJECTED, sort);
-            default -> throw new AccessException("Unknown state: UNSUPPORTED_STATUS");
         };
         return bookingList.stream().map(mapper::toBookingDto).collect(Collectors.toList());
     }
