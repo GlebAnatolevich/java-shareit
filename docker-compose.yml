@@ -1,34 +1,49 @@
-  services:
-    gateway:
-      build: gateway
-      image: shareit-gateway
-      container_name: shareit-gateway
-      ports:
-        - "8080:8080"
-      depends_on:
-        - server
-      environment:
-        - SHAREIT_SERVER_URL=http://server:9090
+services:
+  gateway:
+    build: gateway
+    image: shareit-gateway
+    container_name: shareit-gateway
+    ports:
+      - "8080:8080"
+    depends_on:
+      server:
+        condition: service_healthy # Ждем, пока server не станет healthy
+    environment:
+      - SHAREIT_SERVER_URL=http://server:9090
+    restart: on-failure # Добавляем restart policy для автоматической перезагрузки
 
-    server:
-      build: server
-      image: shareit-server
-      container_name: shareit-server
-      ports:
-        - "9090:9090"
-      depends_on:
-        - db
-      environment:
-        - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/shareit
-        - SPRING_DATASOURCE_USERNAME=shareit
-        - SPRING_DATASOURCE_PASSWORD=shareit
+  server:
+    build: server
+    image: shareit-server
+    container_name: shareit-server
+    ports:
+      - "9090:9090"
+    depends_on:
+      db:
+        condition: service_healthy # Ждем, пока БД не станет healthy
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/shareit
+      - SPRING_DATASOURCE_USERNAME=shareit
+      - SPRING_DATASOURCE_PASSWORD=shareit
+    healthcheck: # Добавляем healthcheck для самого server
+      test: ["CMD", "curl", "-f", "http://localhost:9090/actuator/health"] # Или другой эндпоинт здоровья
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    restart: on-failure
 
-    db:
-      image: postgres:16.1
-      container_name: postgres
-      ports:
-        - "6541:5432"
-      environment:
-        - POSTGRES_PASSWORD=shareit
-        - POSTGRES_USER=shareit
-        - POSTGRES_DB=shareit
+  db:
+    image: postgres:16.1
+    container_name: postgres
+    ports:
+      - "6541:5432"
+    environment:
+      - POSTGRES_PASSWORD=shareit
+      - POSTGRES_USER=shareit
+      - POSTGRES_DB=shareit
+    healthcheck:
+      test: pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER
+      timeout: 5s
+      interval: 5s
+      retries: 10
