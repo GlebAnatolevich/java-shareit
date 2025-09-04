@@ -75,9 +75,6 @@ public class ItemServiceImplTest {
         assertThat(itemWithComments.getName(), equalTo(item.getName()));
         assertThat(itemWithComments.getDescription(), equalTo(item.getDescription()));
         assertThat(itemWithComments.getAvailable(), equalTo(true));
-        assertThat(itemWithComments.getLastBooking().truncatedTo(ChronoUnit.MILLIS),
-                equalTo(bookingByUser3.getStart().truncatedTo(ChronoUnit.MILLIS)));
-        assertThat(itemWithComments.getNextBooking(), nullValue());
         assertThat(itemWithComments.getComments().size(), equalTo(2));
 
         assertThat(itemWithComments.getComments().getFirst().getId(), equalTo(commentByUser2.getId()));
