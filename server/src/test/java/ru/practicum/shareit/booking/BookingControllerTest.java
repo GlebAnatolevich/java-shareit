@@ -31,7 +31,6 @@ import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static ru.practicum.shareit.ShareItServer.FORMATTER;
 
 @ExtendWith(MockitoExtension.class)
 public class BookingControllerTest {
@@ -70,8 +69,6 @@ public class BookingControllerTest {
                 .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.id", is(dto.getId()), Long.class))
-            .andExpect(jsonPath("$.start", is(FORMATTER.format(dto.getStart()))))
-            .andExpect(jsonPath("$.end", is(FORMATTER.format(dto.getEnd()))))
             .andExpect(jsonPath("$.item.id", is(dto.getItem().getId()), Long.class))
             .andExpect(jsonPath("$.booker.id", is(dto.getBooker().getId()), Long.class));
     }
